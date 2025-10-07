@@ -62,7 +62,7 @@
   },
   "dependencies": {
     "@l4t/mcp-ai": "^1.6.0",
-    "@node-in-layers/core": "^1.1.5",
+    "@node-in-layers/core": "^1.10.5",
     "functional-models": "^3.6.0",
     "functional-models-orm-mcp": "^3.6.4"
   }
