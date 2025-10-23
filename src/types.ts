@@ -58,7 +58,7 @@ export type ClientBasicConfig = Partial<Config> &
     /**
      * If you want to provide credentials directly to the client, use this.
      */
-    credentials: {
+    credentials?: {
       /**
        * The header key to use for the authorization token. Defaults to 'Authorization'.
        */
