@@ -7,6 +7,7 @@ import {
   ServicesContext,
   createErrorObject,
   LogLevelNames,
+  annotatedFunction,
 } from '@node-in-layers/core'
 import { StreamableHTTPClientTransport } from '@modelcontextprotocol/sdk/client/streamableHttp.js'
 import { SSEClientTransport } from '@modelcontextprotocol/sdk/client/sse.js'
@@ -254,9 +255,9 @@ const create = (context: ServicesContext<ClientConfig, object>) => {
   >(
     annotationProps: AnnotatedFunctionProps<TProps, TOutput>
   ) => {
-    // @ts-ignore
     return annotatedFunction<TProps, TOutput>(
       annotationProps,
+      // @ts-ignore
       async (input, crossLayerProps) => {
         // For some reason we have to await this here, otherwise zod gets mad.
         // eslint-disable-next-line no-return-await
