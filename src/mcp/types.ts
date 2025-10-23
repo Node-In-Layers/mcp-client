@@ -6,6 +6,7 @@ import {
   NilFunctionReturn,
 } from '@node-in-layers/core'
 import type { JsonAble, JsonObj } from 'functional-models'
+import { McpClientNamespace } from '../types.js'
 // Types for MCP tool metadata
 // NOTE: We override outputSchema to allow nested objects for output schemas, not just OpenAPISchema.
 
@@ -57,5 +58,5 @@ export type McpServices = Readonly<{
 }>
 
 export type McpServicesLayer = Readonly<{
-  mcp: McpServices
+  [McpClientNamespace.mcp]: McpServices
 }>

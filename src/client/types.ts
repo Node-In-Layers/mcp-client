@@ -1,3 +1,5 @@
+import { ClientBasicConfig, McpClientNamespace } from '../types.js'
+
 export type ClientFeatures<
   T extends Record<string, any>,
   TServices extends Record<string, any>,
@@ -15,3 +17,16 @@ export type Client<
   connect: () => Promise<void>
   disconnect: () => Promise<void>
 }
+
+export type ClientEntries = Readonly<{
+  createClient: <
+    T extends Record<string, any>,
+    TServices extends Record<string, any>,
+  >(
+    config: ClientBasicConfig
+  ) => Promise<Client<T, TServices>>
+}>
+
+export type ClientEntriesLayer = Readonly<{
+  [McpClientNamespace.client]: ClientEntries
+}>
