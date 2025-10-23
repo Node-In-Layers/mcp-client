@@ -14,7 +14,7 @@ import { Client } from '@modelcontextprotocol/sdk/client/index.js'
 import { Transport } from '@modelcontextprotocol/sdk/shared/transport.js'
 import axios from 'axios'
 import { JsonAble, JsonObj } from 'functional-models'
-import { ClientConfig } from '../types.js'
+import { ClientConfig, McpClientNamespace } from '../types.js'
 import { createOAuth2Manager } from './oauth2.js'
 
 export const createTransport = (
@@ -72,24 +72,36 @@ const create = (context: ServicesContext<ClientConfig, object>) => {
   let lastAccessToken: string | undefined = undefined
 
   // Setup OAuth2 manager if configured
-  const oauth2Manager = context.config.oauth2
-    ? createOAuth2Manager(context.config.oauth2, axios)
+  const oauth2Manager = context.config[McpClientNamespace.client].oauth2
+    ? createOAuth2Manager(
+        context.config[McpClientNamespace.client].oauth2,
+        axios
+      )
     : undefined
 
   // Internal connect logic (not exposed)
   const ensureConnected = async (): Promise<void> => {
     // If an oauthToken is provided directly (frontend scenario), use it and skip oauth2Manager
-    const directToken = context.config.credentials?.key
+    const directToken =
+      context.config[McpClientNamespace.client].credentials?.key
     if (directToken) {
       if (!mcpClient) {
-        transport = createTransport(context.config.mcp.connection, {
-          header: context.config.credentials?.header,
-          formatter: context.config.credentials?.formatter,
-          key: directToken,
-        })
+        transport = createTransport(
+          context.config[McpClientNamespace.client].mcp.connection as
+            | HttpConnection
+            | SseConnection
+            | CliConnection,
+          {
+            header:
+              context.config[McpClientNamespace.client].credentials?.header,
+            formatter:
+              context.config[McpClientNamespace.client].credentials?.formatter,
+            key: directToken,
+          }
+        )
         mcpClient = new Client({
           name: context.config.name,
-          version: context.config.version || '1.0.0',
+          version: context.config[McpClientNamespace.client].version || '1.0.0',
         })
         await mcpClient.connect(transport)
       }
@@ -105,15 +117,23 @@ const create = (context: ServicesContext<ClientConfig, object>) => {
           mcpClient = undefined
           transport = undefined
         }
-        transport = createTransport(context.config.mcp.connection, {
-          header: context.config.credentials?.header,
-          formatter: context.config.credentials?.formatter,
-          key: accessToken,
-        })
+        transport = createTransport(
+          context.config[McpClientNamespace.client].mcp.connection as
+            | HttpConnection
+            | SseConnection
+            | CliConnection,
+          {
+            header:
+              context.config[McpClientNamespace.client].credentials?.header,
+            formatter:
+              context.config[McpClientNamespace.client].credentials?.formatter,
+            key: accessToken,
+          }
+        )
         // eslint-disable-next-line require-atomic-updates
         mcpClient = new Client({
           name: context.config.name,
-          version: context.config.version || '1.0.0',
+          version: context.config[McpClientNamespace.client].version || '1.0.0',
         })
         await mcpClient.connect(transport)
         // eslint-disable-next-line require-atomic-updates
@@ -123,14 +143,21 @@ const create = (context: ServicesContext<ClientConfig, object>) => {
     }
     // API key or no auth: connect if not already
     if (!mcpClient) {
-      transport = createTransport(context.config.mcp.connection, {
-        header: context.config.credentials?.header,
-        formatter: context.config.credentials?.formatter,
-        key: context.config.credentials?.key,
-      })
+      transport = createTransport(
+        context.config[McpClientNamespace.client].mcp.connection as
+          | HttpConnection
+          | SseConnection
+          | CliConnection,
+        {
+          header: context.config[McpClientNamespace.client].credentials?.header,
+          formatter:
+            context.config[McpClientNamespace.client].credentials?.formatter,
+          key: context.config[McpClientNamespace.client].credentials?.key,
+        }
+      )
       mcpClient = new Client({
         name: context.config.name,
-        version: context.config.version || '1.0.0',
+        version: context.config[McpClientNamespace.client].version || '1.0.0',
       })
       await mcpClient.connect(transport)
     }
@@ -169,36 +196,36 @@ const create = (context: ServicesContext<ClientConfig, object>) => {
       arguments: input,
     }
 
-    log[context.config.logging?.requestLevel || LogLevelNames.info](
-      'MCP client request',
-      {
-        tool: toolName,
-        method: 'POST',
-        body: callToolProps,
-      }
-    )
+    log[
+      context.config[McpClientNamespace.client].logging?.requestLevel ||
+        LogLevelNames.info
+    ]('MCP client request', {
+      tool: toolName,
+      method: 'POST',
+      body: callToolProps,
+    })
 
     const response = await mcpClient.callTool(callToolProps).catch(e => {
       const error = createErrorObject('MCP call failed', e)
-      log[context.config.logging?.errorLevel || LogLevelNames.error](
-        'MCP client error',
-        {
-          tool: toolName,
-          error: error,
-        }
-      )
+      log[
+        context.config[McpClientNamespace.client].logging?.errorLevel ||
+          LogLevelNames.error
+      ]('MCP client error', {
+        tool: toolName,
+        error: error,
+      })
       throw e
     })
     // @ts-ignore
     const actualData = JSON.parse(response.content[0].text)
 
-    log[context.config.logging?.responseLevel || LogLevelNames.info](
-      'MCP client response',
-      {
-        tool: toolName,
-        response: actualData,
-      }
-    )
+    log[
+      context.config[McpClientNamespace.client].logging?.responseLevel ||
+        LogLevelNames.info
+    ]('MCP client response', {
+      tool: toolName,
+      response: actualData,
+    })
 
     return actualData as TOutput
   }

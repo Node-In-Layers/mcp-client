@@ -1,5 +1,4 @@
 import merge from 'lodash/merge.js'
-import omit from 'lodash/omit.js'
 import {
   CoreNamespace,
   loadSystem as loadCoreSystem,
@@ -23,7 +22,7 @@ export const createClient = async <T extends Record<string, any>>({
   const theConfig = merge(
     {
       [CoreNamespace.root]: {
-        apps: config.domains,
+        apps: config[McpClientNamespace.client].domains,
         logging: {
           logLevel: LogLevelNames.info,
           logFormat: LogFormat.json,
@@ -38,7 +37,7 @@ export const createClient = async <T extends Record<string, any>>({
         modelCruds: true,
       },
     },
-    omit(config, ['domains', 'logging'])
+    config
   ) as unknown as ClientConfig
 
   const system = await loadCoreSystem({

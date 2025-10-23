@@ -27,55 +27,60 @@ export type ClientBasicConfig = Partial<Config> &
      */
     environment: string
     /**
-     * The domains to be loaded, in their order.
+     * The client specific configurations.
      */
-    domains: readonly App[]
-    /**
-     * Configurations for the MCP Server that is being connected to.
-     */
-    mcp: McpConfig
-    /**
-     * A version for the "mcp" client. Not required.
-     */
-    version?: string
-    /**
-     * Additional options for getting callback
-     */
-    logging?: {
+    [McpClientNamespace.client]: {
       /**
-       * The log level for requests.
+       * The domains to be loaded, in their order.
        */
-      requestLevel?: LogLevelNames
+      domains: readonly App[]
       /**
-       * The log level for responses.
+       * Configurations for the MCP Server that is being connected to.
        */
-      responseLevel?: LogLevelNames
+      mcp: McpConfig
       /**
-       * The log level for errors.
+       * A version for the "mcp" client. Not required.
        */
-      errorLevel?: LogLevelNames
+      version?: string
+      /**
+       * Additional options for getting callback
+       */
+      logging?: {
+        /**
+         * The log level for requests.
+         */
+        requestLevel?: LogLevelNames
+        /**
+         * The log level for responses.
+         */
+        responseLevel?: LogLevelNames
+        /**
+         * The log level for errors.
+         */
+        errorLevel?: LogLevelNames
+      }
+      /**
+       * If you want to provide credentials directly to the client, use this.
+       */
+      credentials?: {
+        /**
+         * The header key to use for the authorization token. Defaults to 'Authorization'.
+         */
+        header?: string
+        /**
+         * The authorization token or api key
+         */
+        key?: string
+        /**
+         * Formats the key authorization key. Defaults to `Bearer ${key}`
+         */
+        formatter?: (key: string) => string
+      }
+      /**
+       * If you want the client to manage oauth2 connections, use this.
+       */
+      oauth2?: OAuth2Config
     }
-    /**
-     * If you want to provide credentials directly to the client, use this.
-     */
-    credentials?: {
-      /**
-       * The header key to use for the authorization token. Defaults to 'Authorization'.
-       */
-      header?: string
-      /**
-       * The authorization token or api key
-       */
-      key?: string
-      /**
-       * Formats the key authorization key. Defaults to `Bearer ${key}`
-       */
-      formatter?: (key: string) => string
-    }
-    /**
-     * If you want the client to manage oauth2 connections, use this.
-     */
-    oauth2?: OAuth2Config
   }>
 
 /**
