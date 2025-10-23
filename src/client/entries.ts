@@ -15,14 +15,11 @@ import type { Client } from './types.js'
  * @param param0
  * @returns The features of the node in layers client/sdk.
  */
-export const createClient = async <
-  T extends Record<string, any>,
-  TServices extends Record<string, any>,
->({
+export const createClient = async <T extends Record<string, any>>({
   config,
 }: {
   config: ClientBasicConfig
-}): Promise<Client<T, TServices>> => {
+}): Promise<Client<T>> => {
   const theConfig = merge(
     {
       [CoreNamespace.root]: {
@@ -48,5 +45,5 @@ export const createClient = async <
     environment: theConfig.environment,
     config: theConfig,
   })
-  return system.features as Client<T, TServices>
+  return system.features as Client<T>
 }

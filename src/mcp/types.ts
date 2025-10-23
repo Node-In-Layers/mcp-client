@@ -1,4 +1,3 @@
-import type { HttpConnection, SseConnection, CliConnection } from '@l4t/mcp-ai'
 import {
   AnnotatedFunctionProps,
   CrossLayerProps,
@@ -7,8 +6,6 @@ import {
 } from '@node-in-layers/core'
 import type { JsonAble, JsonObj } from 'functional-models'
 import { McpClientNamespace } from '../types.js'
-// Types for MCP tool metadata
-// NOTE: We override outputSchema to allow nested objects for output schemas, not just OpenAPISchema.
 
 export enum HttpMethod {
   get = 'get',
@@ -31,10 +28,6 @@ export type OAuth2Manager = {
   getAccessToken: () => Promise<string>
   handle401AndRetry: <T>(fn: () => Promise<T>) => Promise<T>
 }
-
-export type McpConfig = Readonly<{
-  connection: HttpConnection | SseConnection | CliConnection
-}>
 
 export type McpServices = Readonly<{
   disconnect: () => Promise<void>

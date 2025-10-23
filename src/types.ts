@@ -1,12 +1,16 @@
+import { CliConnection, HttpConnection, SseConnection } from '@l4t/mcp-ai'
 import { Config, App, LogLevelNames } from '@node-in-layers/core'
-import { OAuth2Config } from 'functional-models-orm-mcp'
-import { McpConfig } from './mcp/types.js'
+import type { OAuth2Config } from 'functional-models-orm-mcp'
 
 export enum McpClientNamespace {
   client = '@node-in-layers/mcp-client/client',
   mcp = '@node-in-layers/mcp-client/mcp',
   data = '@node-in-layers/mcp-client/data',
 }
+
+export type McpConfig = Readonly<{
+  connection: HttpConnection | SseConnection | CliConnection
+}>
 
 /**
  * The basic configurations needed for creating the client.
