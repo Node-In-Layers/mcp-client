@@ -158,7 +158,16 @@ export default [
       'no-sequences': ['error'],
       'no-throw-literal': ['error'],
       'no-unmodified-loop-condition': ['error'],
-      'no-unused-expressions': ['error'],
+      'no-unused-expressions': 0,
+      '@typescript-eslint/no-unused-expressions': [
+        'error',
+        {
+          allowShortCircuit: true,
+          allowTernary: true,
+          allowTaggedTemplates: true,
+          enforceForJSX: true,
+        },
+      ],
       'no-useless-call': ['error'],
       'no-useless-concat': ['error'],
       'no-void': ['error'],

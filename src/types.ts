@@ -1,32 +1,80 @@
-import { Config, GetModelPropsFunc } from '@node-in-layers/core'
-import { DatastoreProviderConfig } from 'functional-models-orm-mcp/types.js'
+import { Config, App, LogLevelNames } from '@node-in-layers/core'
+import { OAuth2Config } from 'functional-models-orm-mcp'
+import { McpConfig } from './mcp/types.js'
 
-type McpClientServices = Readonly<{
-  /**
-   * A function that gives ModelProps. This is useful for empowering mcp models (functional-models-orm-mcp)
-   */
-  getModelProps: GetModelPropsFunc
-}>
+export enum McpClientNamespace {
+  client = '@node-in-layers/mcp-client/client',
+  mcp = '@node-in-layers/mcp-client/mcp',
+  data = '@node-in-layers/mcp-client/data',
+}
 
-type McpClientServicesLayer = Readonly<{
-  '@node-in-layers/mcp-client': McpClientServices
-}>
-
-type McpClientFeatures = Readonly<object>
-
-type McpClientFeaturesLayer = Readonly<{
-  '@node-in-layers/mcp-client': McpClientFeatures
-}>
-
-type McpClientConfig = Config &
+/**
+ * The basic configurations needed for creating the client.
+ * The rest of the Node in Layer configs are loaded automatically.
+ */
+export type ClientBasicConfig = Partial<Config> &
   Readonly<{
-    '@node-in-layers/mcp-client': DatastoreProviderConfig
+    /**
+     * A name to be used with the MCP client.
+     */
+    name: string
+    /**
+     * The enviornment the client is running in.
+     */
+    environment: string
+    /**
+     * The domains to be loaded, in their order.
+     */
+    domains: readonly App[]
+    /**
+     * Configurations for the MCP Server that is being connected to.
+     */
+    mcp: McpConfig
+    /**
+     * A version for the "mcp" client. Not required.
+     */
+    version?: string
+    /**
+     * Additional options for getting callback
+     */
+    logging?: {
+      /**
+       * The log level for requests.
+       */
+      requestLevel?: LogLevelNames
+      /**
+       * The log level for responses.
+       */
+      responseLevel?: LogLevelNames
+      /**
+       * The log level for errors.
+       */
+      errorLevel?: LogLevelNames
+    }
+    /**
+     * If you want to provide credentials directly to the client, use this.
+     */
+    credentials: {
+      /**
+       * The header key to use for the authorization token. Defaults to 'Authorization'.
+       */
+      header?: string
+      /**
+       * The authorization token or api key
+       */
+      key?: string
+      /**
+       * Formats the key authorization key. Defaults to `Bearer ${key}`
+       */
+      formatter?: (key: string) => string
+    }
+    /**
+     * If you want the client to manage oauth2 connections, use this.
+     */
+    oauth2?: OAuth2Config
   }>
 
-export {
-  McpClientServices,
-  McpClientServicesLayer,
-  McpClientFeatures,
-  McpClientFeaturesLayer,
-  McpClientConfig,
-}
+/**
+ * The full configuration for the client.
+ */
+export type ClientConfig = Config & ClientBasicConfig

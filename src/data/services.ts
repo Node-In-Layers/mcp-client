@@ -4,7 +4,6 @@ import { datastoreProvider as restDatastoreProvider } from 'functional-models-or
 import { memoizeValueSync } from '@node-in-layers/core/utils.js'
 import { McpClientServices, McpClientConfig } from './types.js'
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const create = (): McpClientServices => {
   const getDatastoreProvider = memoizeValueSync(
     (context: ServicesContext<McpClientConfig>) => {
