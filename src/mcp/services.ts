@@ -255,18 +255,18 @@ const create = (context: ServicesContext<ClientConfig, object>) => {
   >(
     annotationProps: AnnotatedFunctionProps<TProps, TOutput>
   ) => {
+    async function _wrapper(input, crossLayerProps) {
+      const result = await executeMcpFeature<TProps, TOutput>(
+        annotationProps,
+        input,
+        crossLayerProps
+      )
+      return result
+    }
     return annotatedFunction<TProps, TOutput>(
       annotationProps,
       // @ts-ignore
-      async (input, crossLayerProps) => {
-        // For some reason we have to await this here, otherwise zod gets mad.
-        // eslint-disable-next-line no-return-await
-        return await executeMcpFeature<TProps, TOutput>(
-          annotationProps,
-          input,
-          crossLayerProps
-        )
-      }
+      _wrapper
     )
   }
 
