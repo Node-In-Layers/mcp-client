@@ -17,7 +17,7 @@ import type { Client } from './types.js'
 export const createClient = async <T extends Record<string, any>>(
   config: ClientBasicConfig
 ): Promise<Client<T>> => {
-  const theConfig = merge(
+  const theConfig = merge({}, config, 
     {
       [CoreNamespace.root]: {
         apps: config[McpClientNamespace.client].domains,
@@ -34,8 +34,7 @@ export const createClient = async <T extends Record<string, any>>(
         modelFactory: McpClientNamespace.data,
         modelCruds: true,
       },
-    },
-    config
+    }
   ) as unknown as ClientConfig
 
   const system = await loadCoreSystem({
