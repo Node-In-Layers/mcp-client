@@ -14,11 +14,9 @@ import type { Client } from './types.js'
  * @param param0
  * @returns The features of the node in layers client/sdk.
  */
-export const createClient = async <T extends Record<string, any>>({
-  config,
-}: {
+export const createClient = async <T extends Record<string, any>>(
   config: ClientBasicConfig
-}): Promise<Client<T>> => {
+): Promise<Client<T>> => {
   const theConfig = merge(
     {
       [CoreNamespace.root]: {
@@ -29,8 +27,7 @@ export const createClient = async <T extends Record<string, any>>({
           ignoreLayerFunctions: {
             [McpClientNamespace.client]: true,
             [McpClientNamespace.data]: true,
-            [`${McpClientNamespace.mcpBackend}.services.createMcpFeature`]: true,
-            [`${McpClientNamespace.mcpFrontend}.services.createMcpFeature`]: true,
+            [`${McpClientNamespace.mcp}.services.createMcpFeature`]: true,
           },
         },
         layerOrder: ['services', 'features', 'mcp'],

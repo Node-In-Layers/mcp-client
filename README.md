@@ -6,11 +6,15 @@ This library exists for helping to make simple mcp clients using node-in-layer s
 
 The recommended way of using this library is by using the `createClient()` function. This function provides a streamlined sdk client for your features and models. You would put this in your SDK library, and then consume this client code on a frontend, or another backend system.
 
+NOTE: In order to make this library tree shakeable and usable in any environment (backend/frontend), there are TWO mcp domains, that you must choose to import. If you want the ability to use mcp-client functionality on a CLI you must import from "@node-in-layers/mcp-client/backend/index.js" rather than from mcp/index.js.
+
 The following example, you would put in your SDK, and then the instance would be created by the consumer of your backend MCP server. We have set this up so that it could be used from either a Frontend or another Backend system, (such as a CLI).
 
 ### Your SDK/Client Library
 
 ```typescript
+// This has the common use mcp domain
+import { * as mcp } from '@node-in-layers/mcp-client/mcp/index.js'
 import { createClient as createMcpClient } from '@node-in-layers/mcp-client'
 import * as domain1 from '../domain1/index.js'
 import * as domain2 from '../domain2/index.js'
@@ -34,10 +38,11 @@ export const create = (context: FeaturesContext<YourConfig>) => {
       extraParams?: Record<string, JsonAble>
     }
   }) => {
+
     const config = {
       systemName: context.config.systemName,
       environment: context.config.environment,
-      domains: [domain1, domain2, domain3],
+      domains: [mcp, domain1, domain2, domain3],
       // These configurations can be put into your main config, and configure the MCP client itself.
       mcp: context.config.mcpClient,
       credentials: {
