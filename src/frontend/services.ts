@@ -1,6 +1,5 @@
 import { v4 as uuidv4 } from 'uuid'
 import { CliConnection, HttpConnection, SseConnection } from '@l4t/mcp-ai'
-import { StdioClientTransport } from '@modelcontextprotocol/sdk/client/stdio.js'
 import {
   AnnotatedFunctionProps,
   CrossLayerProps,
@@ -16,9 +15,9 @@ import { Transport } from '@modelcontextprotocol/sdk/shared/transport.js'
 import axios from 'axios'
 import { JsonAble, JsonObj } from 'functional-models'
 import { ClientConfig, McpClientNamespace } from '../types.js'
-import { createOAuth2Manager } from './oauth2.js'
+import { createOAuth2Manager } from '../common/oauth2.js'
 
-export const createTransport = (
+export const createTransport = async (
   connection: HttpConnection | SseConnection | CliConnection,
   auth?: {
     key?: string
@@ -51,14 +50,6 @@ export const createTransport = (
       ...headers,
     })
   }
-  if (connection.type === 'cli') {
-    return new StdioClientTransport({
-      command: connection.path,
-      args: connection.args,
-      env: connection.env,
-      cwd: connection.cwd,
-    })
-  }
   throw new Error(
     `Unsupported connection type: ${(connection as { type: string }).type}`
   )
@@ -87,7 +78,7 @@ const create = (context: ServicesContext<ClientConfig, object>) => {
       context.config[McpClientNamespace.client].credentials?.key
     if (directToken) {
       if (!mcpClient) {
-        transport = createTransport(
+        transport = await createTransport(
           context.config[McpClientNamespace.client].mcp.connection as
             | HttpConnection
             | SseConnection
@@ -118,7 +109,7 @@ const create = (context: ServicesContext<ClientConfig, object>) => {
           mcpClient = undefined
           transport = undefined
         }
-        transport = createTransport(
+        transport = await createTransport(
           context.config[McpClientNamespace.client].mcp.connection as
             | HttpConnection
             | SseConnection
@@ -144,7 +135,7 @@ const create = (context: ServicesContext<ClientConfig, object>) => {
     }
     // API key or no auth: connect if not already
     if (!mcpClient) {
-      transport = createTransport(
+      transport = await createTransport(
         context.config[McpClientNamespace.client].mcp.connection as
           | HttpConnection
           | SseConnection

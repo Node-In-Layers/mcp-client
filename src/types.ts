@@ -4,7 +4,8 @@ import type { OAuth2Config } from 'functional-models-orm-mcp'
 
 export enum McpClientNamespace {
   client = '@node-in-layers/mcp-client/client',
-  mcp = '@node-in-layers/mcp-client/mcp',
+  mcpBackend = '@node-in-layers/mcp-client/mcp-backend',
+  mcpFrontend = '@node-in-layers/mcp-client/mcp-frontend',
   data = '@node-in-layers/mcp-client/data',
 }
 

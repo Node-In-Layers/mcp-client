@@ -29,7 +29,8 @@ export const createClient = async <T extends Record<string, any>>({
           ignoreLayerFunctions: {
             [McpClientNamespace.client]: true,
             [McpClientNamespace.data]: true,
-            [`${McpClientNamespace.mcp}.services.createMcpFeature`]: true,
+            [`${McpClientNamespace.mcpBackend}.services.createMcpFeature`]: true,
+            [`${McpClientNamespace.mcpFrontend}.services.createMcpFeature`]: true,
           },
         },
         layerOrder: ['services', 'features', 'mcp'],

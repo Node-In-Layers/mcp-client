@@ -49,7 +49,3 @@ export type McpServices = Readonly<{
     annotationProps: AnnotatedFunctionProps<TProps, TOutput>
   ) => NilAnnotatedFunction<TProps, TOutput>
 }>
-
-export type McpServicesLayer = Readonly<{
-  [McpClientNamespace.mcp]: McpServices
-}>
