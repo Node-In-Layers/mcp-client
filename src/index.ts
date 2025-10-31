@@ -1,4 +1,7 @@
 export { createClient } from './client/entries.js'
+export * as mcp from './mcp/index.js'
+export * as data from './data/index.js'
+export * as client from './client/index.js'
 export * from './mcp/types.js'
 export * from './data/types.js'
 export * from './client/types.js'
