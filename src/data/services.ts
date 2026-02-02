@@ -3,11 +3,12 @@ import { createOrm, ModelInstanceFetcher } from 'functional-models'
 import { datastoreProvider as restDatastoreProvider } from 'functional-models-orm-mcp'
 import { memoizeValueSync } from '@node-in-layers/core/utils.js'
 import { McpClientServices, McpClientConfig } from './types.js'
+import { McpClientNamespace } from '../types.js'
 
 const create = (): McpClientServices => {
   const getDatastoreProvider = memoizeValueSync(
     (context: ServicesContext<McpClientConfig>) => {
-      return restDatastoreProvider(context.config['@node-in-layers/mcp-client'])
+      return restDatastoreProvider(context.config[McpClientNamespace.client])
     }
   )
 

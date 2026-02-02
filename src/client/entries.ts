@@ -17,22 +17,25 @@ import type { Client } from './types.js'
 export const createClient = async <T extends Record<string, any>>(
   config: ClientBasicConfig
 ): Promise<Client<T>> => {
-  const theConfig = merge({}, config, 
+  const theConfig = merge(
     {
       [CoreNamespace.root]: {
-        apps: config[McpClientNamespace.client].domains,
         logging: {
           logLevel: LogLevelNames.info,
           logFormat: LogFormat.json,
           ignoreLayerFunctions: {
             [McpClientNamespace.client]: true,
-            [McpClientNamespace.data]: true,
-            [`${McpClientNamespace.mcp}.services.createMcpFeature`]: true,
           },
+          layerOrder: ['services', 'features', 'mcp'],
+          modelFactory: McpClientNamespace.data,
+          modelCruds: true,
         },
-        layerOrder: ['services', 'features', 'mcp'],
-        modelFactory: McpClientNamespace.data,
-        modelCruds: true,
+      },
+    },
+    config,
+    {
+      [CoreNamespace.root]: {
+        apps: config[McpClientNamespace.client].domains,
       },
     }
   ) as unknown as ClientConfig
