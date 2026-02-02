@@ -8,7 +8,7 @@ import { McpClientNamespace } from '../types.js'
 const create = (): McpClientServices => {
   const getDatastoreProvider = memoizeValueSync(
     (context: ServicesContext<McpClientConfig>) => {
-      return restDatastoreProvider(context.config[McpClientNamespace.client])
+      return restDatastoreProvider(context.config[McpClientNamespace.client].mcp)
     }
   )
 
