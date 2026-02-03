@@ -19,15 +19,9 @@ type McpClientFeaturesLayer = Readonly<{
   [McpClientNamespace.client]: McpClientFeatures
 }>
 
-type McpClientConfig = Config &
-  Readonly<{
-    [McpClientNamespace.data]: DatastoreProviderConfig
-  }>
-
 export {
   McpClientServices,
   McpClientServicesLayer,
   McpClientFeatures,
   McpClientFeaturesLayer,
-  McpClientConfig,
 }

@@ -1,6 +1,9 @@
 import { CliConnection, HttpConnection, SseConnection } from '@l4t/mcp-ai'
 import { Config, App, LogLevelNames } from '@node-in-layers/core'
-import type { OAuth2Config } from 'functional-models-orm-mcp'
+import type {
+  OAuth2Config,
+  DatastoreProviderConfig,
+} from 'functional-models-orm-mcp'
 
 export enum McpClientNamespace {
   client = '@node-in-layers/mcp-client/client',
@@ -9,8 +12,53 @@ export enum McpClientNamespace {
 }
 
 export type McpConfig = Readonly<{
-  connection: HttpConnection | SseConnection | CliConnection
+  connection: DatastoreProviderConfig['connection']
 }>
+
+export type McpClientConfig = {
+  /**
+   * The domains to be loaded, in their order.
+   */
+  domains: readonly App[]
+  /**
+   * Configurations for the MCP Server that is being connected to.
+   */
+  mcp: McpConfig
+  /**
+   * A version for the "mcp" client. Not required.
+   */
+  version?: string
+  /**
+   * Additional options for getting callback
+   */
+  logging?: {
+    /**
+     * The log level for requests.
+     */
+    requestLevel?: LogLevelNames
+    /**
+     * The log level for responses.
+     */
+    responseLevel?: LogLevelNames
+    /**
+     * The log level for errors.
+     */
+    errorLevel?: LogLevelNames
+  }
+  /**
+   * If you want to provide credentials directly to the client, use this.
+   */
+  credentials?: DatastoreProviderConfig['credentials'] &
+    Readonly<{
+      header?: string
+      key?: string
+      formatter?: (key: string) => string
+    }>
+  /**
+   * If you want the client to manage oauth2 connections, use this.
+   */
+  oauth2?: OAuth2Config
+}
 
 /**
  * The basic configurations needed for creating the client.
@@ -18,69 +66,7 @@ export type McpConfig = Readonly<{
  */
 export type ClientBasicConfig = Partial<Config> &
   Readonly<{
-    /**
-     * A name to be used with the MCP client.
-     */
-    name: string
-    /**
-     * The enviornment the client is running in.
-     */
-    environment: string
-    /**
-     * The client specific configurations.
-     */
-    [McpClientNamespace.client]: {
-      /**
-       * The domains to be loaded, in their order.
-       */
-      domains: readonly App[]
-      /**
-       * Configurations for the MCP Server that is being connected to.
-       */
-      mcp: McpConfig
-      /**
-       * A version for the "mcp" client. Not required.
-       */
-      version?: string
-      /**
-       * Additional options for getting callback
-       */
-      logging?: {
-        /**
-         * The log level for requests.
-         */
-        requestLevel?: LogLevelNames
-        /**
-         * The log level for responses.
-         */
-        responseLevel?: LogLevelNames
-        /**
-         * The log level for errors.
-         */
-        errorLevel?: LogLevelNames
-      }
-      /**
-       * If you want to provide credentials directly to the client, use this.
-       */
-      credentials?: {
-        /**
-         * The header key to use for the authorization token. Defaults to 'Authorization'.
-         */
-        header?: string
-        /**
-         * The authorization token or api key
-         */
-        key?: string
-        /**
-         * Formats the key authorization key. Defaults to `Bearer ${key}`
-         */
-        formatter?: (key: string) => string
-      }
-      /**
-       * If you want the client to manage oauth2 connections, use this.
-       */
-      oauth2?: OAuth2Config
-    }
+    [McpClientNamespace.client]: McpClientConfig
   }>
 
 /**

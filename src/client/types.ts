@@ -1,3 +1,6 @@
+import { App, LogLevelNames } from '@node-in-layers/core'
+import { CliConnection, HttpConnection, SseConnection } from '@l4t/mcp-ai'
+import type { OAuth2Config } from 'functional-models-orm-mcp'
 import { ClientBasicConfig, McpClientNamespace } from '../types.js'
 
 export type ClientFeatures<T extends Record<string, any>> = T

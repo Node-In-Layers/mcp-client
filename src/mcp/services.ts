@@ -92,7 +92,7 @@ const create = (context: ServicesContext<ClientConfig, object>) => {
           }
         )
         mcpClient = new Client({
-          name: context.config.name,
+          name: context.config.systemName,
           version: context.config[McpClientNamespace.client].version || '1.0.0',
         })
         await mcpClient.connect(transport)
@@ -124,7 +124,7 @@ const create = (context: ServicesContext<ClientConfig, object>) => {
         )
         // eslint-disable-next-line require-atomic-updates
         mcpClient = new Client({
-          name: context.config.name,
+          name: context.config.systemName,
           version: context.config[McpClientNamespace.client].version || '1.0.0',
         })
         await mcpClient.connect(transport)
@@ -148,7 +148,7 @@ const create = (context: ServicesContext<ClientConfig, object>) => {
         }
       )
       mcpClient = new Client({
-        name: context.config.name,
+        name: context.config.systemName,
         version: context.config[McpClientNamespace.client].version || '1.0.0',
       })
       await mcpClient.connect(transport)
