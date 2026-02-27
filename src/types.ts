@@ -1,9 +1,27 @@
-import { CliConnection, HttpConnection, SseConnection } from '@l4t/mcp-ai'
 import { Config, App, LogLevelNames } from '@node-in-layers/core'
 import type {
   OAuth2Config,
   DatastoreProviderConfig,
 } from 'functional-models-orm-mcp'
+
+export type CliConnection = Readonly<{
+  type: 'cli'
+  path: string
+  args?: string[]
+  env?: Record<string, string>
+  cwd?: string
+}>
+
+export type HttpConnection = Readonly<{
+  type: 'http'
+  url: string
+  headers?: Readonly<Record<string, string>>
+  timeout?: number
+  retry?: Readonly<{
+    attempts: number
+    backoff: number
+  }>
+}>
 
 export enum McpClientNamespace {
   client = '@node-in-layers/mcp-client/client',

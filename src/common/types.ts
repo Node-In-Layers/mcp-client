@@ -5,7 +5,6 @@ import {
   NilFunctionReturn,
 } from '@node-in-layers/core'
 import type { JsonAble, JsonObj } from 'functional-models'
-import { McpClientNamespace } from '../types.js'
 
 export enum HttpMethod {
   get = 'get',

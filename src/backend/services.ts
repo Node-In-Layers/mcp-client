@@ -1,5 +1,4 @@
 import { v4 as uuidv4 } from 'uuid'
-import { CliConnection, HttpConnection, SseConnection } from '@l4t/mcp-ai'
 import { StdioClientTransport } from '@modelcontextprotocol/sdk/client/stdio.js'
 import {
   AnnotatedFunctionProps,
@@ -8,18 +7,23 @@ import {
   createErrorObject,
   LogLevelNames,
   annotatedFunction,
+  XOR,
 } from '@node-in-layers/core'
 import { StreamableHTTPClientTransport } from '@modelcontextprotocol/sdk/client/streamableHttp.js'
-import { SSEClientTransport } from '@modelcontextprotocol/sdk/client/sse.js'
 import { Client } from '@modelcontextprotocol/sdk/client/index.js'
 import { Transport } from '@modelcontextprotocol/sdk/shared/transport.js'
 import axios from 'axios'
 import { JsonAble, JsonObj } from 'functional-models'
-import { ClientConfig, McpClientNamespace } from '../types.js'
+import {
+  ClientConfig,
+  McpClientNamespace,
+  HttpConnection,
+  CliConnection,
+} from '../types.js'
 import { createOAuth2Manager } from '../common/oauth2.js'
 
 export const createTransport = async (
-  connection: HttpConnection | SseConnection | CliConnection,
+  connection: XOR<HttpConnection, CliConnection>,
   auth?: {
     key?: string
     header?: string
@@ -43,11 +47,6 @@ export const createTransport = async (
 
   if (connection.type === 'http') {
     return new StreamableHTTPClientTransport(new URL(connection.url), {
-      ...headers,
-    })
-  }
-  if (connection.type === 'sse') {
-    return new SSEClientTransport(new URL(connection.url), {
       ...headers,
     })
   }
@@ -90,10 +89,8 @@ const create = (context: ServicesContext<ClientConfig, object>) => {
     if (directToken) {
       if (!mcpClient) {
         transport = await createTransport(
-          context.config[McpClientNamespace.client].mcp.connection as
-            | HttpConnection
-            | SseConnection
-            | CliConnection,
+          context.config[McpClientNamespace.client].mcp
+            .connection as HttpConnection,
           {
             header:
               context.config[McpClientNamespace.client].credentials?.header,
@@ -102,6 +99,7 @@ const create = (context: ServicesContext<ClientConfig, object>) => {
             key: directToken,
           }
         )
+        // eslint-disable-next-line require-atomic-updates
         mcpClient = new Client({
           name: context.config.systemName,
           version: context.config[McpClientNamespace.client].version || '1.0.0',
@@ -121,10 +119,8 @@ const create = (context: ServicesContext<ClientConfig, object>) => {
           transport = undefined
         }
         transport = await createTransport(
-          context.config[McpClientNamespace.client].mcp.connection as
-            | HttpConnection
-            | SseConnection
-            | CliConnection,
+          context.config[McpClientNamespace.client].mcp
+            .connection as HttpConnection,
           {
             header:
               context.config[McpClientNamespace.client].credentials?.header,
@@ -147,10 +143,8 @@ const create = (context: ServicesContext<ClientConfig, object>) => {
     // API key or no auth: connect if not already
     if (!mcpClient) {
       transport = await createTransport(
-        context.config[McpClientNamespace.client].mcp.connection as
-          | HttpConnection
-          | SseConnection
-          | CliConnection,
+        context.config[McpClientNamespace.client].mcp
+          .connection as HttpConnection,
         {
           header: context.config[McpClientNamespace.client].credentials?.header,
           formatter:
@@ -158,6 +152,7 @@ const create = (context: ServicesContext<ClientConfig, object>) => {
           key: context.config[McpClientNamespace.client].credentials?.key,
         }
       )
+      // eslint-disable-next-line require-atomic-updates
       mcpClient = new Client({
         name: context.config.systemName,
         version: context.config[McpClientNamespace.client].version || '1.0.0',

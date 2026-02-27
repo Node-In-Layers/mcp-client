@@ -44,5 +44,6 @@ export const createClient = async <T extends Record<string, any>>(
     environment: theConfig.environment,
     config: theConfig,
   })
+  // @ts-ignore
   return system.features as Client<T>
 }

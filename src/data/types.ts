@@ -1,5 +1,4 @@
-import { Config, GetModelPropsFunc } from '@node-in-layers/core'
-import { DatastoreProviderConfig } from 'functional-models-orm-mcp/types.js'
+import { GetModelPropsFunc } from '@node-in-layers/core'
 import { McpClientNamespace } from '../types.js'
 
 type McpClientServices = Readonly<{

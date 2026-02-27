@@ -8,8 +8,8 @@ import {
   DatastoreProviderConfig,
 } from 'functional-models-orm-mcp'
 import { memoizeValueSync } from '@node-in-layers/core/utils.js'
-import { McpClientServices } from './types.js'
 import { McpClientNamespace, McpClientConfig, ClientConfig } from '../types.js'
+import { McpClientServices } from './types.js'
 
 const _getDatastoreProviderConfig = (
   config: McpClientConfig
