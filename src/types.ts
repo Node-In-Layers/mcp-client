@@ -3,6 +3,7 @@ import type {
   OAuth2Config,
   DatastoreProviderConfig,
 } from 'functional-models-orm-mcp'
+import type { McpAuthResolutionResult } from './common/types.js'
 
 export type CliConnection = Readonly<{
   type: 'cli'
@@ -31,6 +32,24 @@ export enum McpClientNamespace {
 
 export type McpConfig = Readonly<{
   connection: DatastoreProviderConfig['connection']
+}>
+
+export type McpAuthAdapterConfig = Readonly<{
+  /**
+   * Namespace of the loaded domain that provides mcp auth functions.
+   * Example: "@node-in-layers/auth/client"
+   * If omitted, falls back to the client namespace.
+   */
+  module?: string
+  /**
+   * The auth function name on the resolved services.
+   * Defaults to getAuth.
+   */
+  authFunctionName?: string
+  /**
+   * Optional static fallback if external adapter returns undefined.
+   */
+  fallbackAuth?: McpAuthResolutionResult
 }>
 
 export type McpClientConfig = {
@@ -76,6 +95,11 @@ export type McpClientConfig = {
    * If you want the client to manage oauth2 connections, use this.
    */
   oauth2?: OAuth2Config
+  /**
+   * Optional external auth adapter wiring.
+   * If provided, mcp-client will resolve auth from another loaded domain.
+   */
+  authAdapter?: McpAuthAdapterConfig
 }
 
 /**

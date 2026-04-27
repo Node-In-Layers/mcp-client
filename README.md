@@ -8,6 +8,10 @@ The recommended way of using this library is by using the `createClient()` funct
 
 NOTE: In order to make this library tree shakeable and usable in any environment (backend/frontend), there are TWO mcp domains, that you must choose to import. If you want the ability to use mcp-client functionality on a CLI you must import from "@node-in-layers/mcp-client/backend/index.js" rather than from mcp/index.js.
 
+- `@node-in-layers/mcp-client/mcp` is frontend-safe and HTTP transport only.
+- `@node-in-layers/mcp-client/backend` is backend/CLI-capable and adds CLI transport support.
+- Both share the same connection/auth core behavior, so auth logic is not duplicated across domains.
+
 The following example, you would put in your SDK, and then the instance would be created by the consumer of your backend MCP server. We have set this up so that it could be used from either a Frontend or another Backend system, (such as a CLI).
 
 ### Your SDK/Client Library

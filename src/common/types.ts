@@ -28,6 +28,24 @@ export type OAuth2Manager = {
   handle401AndRetry: <T>(fn: () => Promise<T>) => Promise<T>
 }
 
+export type McpAuthResolutionResult = Readonly<{
+  key: string
+  header?: string
+  formatter?: (key: string) => string
+}>
+
+export type McpExternalAuthServices = Readonly<{
+  getAuth: (
+    crossLayerProps?: CrossLayerProps
+  ) => Promise<McpAuthResolutionResult | undefined>
+}>
+
+export type McpExternalAuthFeatures = Readonly<{
+  getAuth: (
+    crossLayerProps?: CrossLayerProps
+  ) => Promise<McpAuthResolutionResult | undefined>
+}>
+
 export type McpServices = Readonly<{
   disconnect: () => Promise<void>
   executeMcpFeature: <TInput extends JsonObj, TOutput extends JsonObj | void>(
