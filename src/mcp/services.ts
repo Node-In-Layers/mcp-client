@@ -173,9 +173,11 @@ export const createMcpServices = (
 
     return async (crossLayerProps?: CrossLayerProps) => {
       const auth = await Promise.resolve(resolvedAuthFunction(crossLayerProps))
-      const validatedAuth = _requireAuthResolution(
+      const authOrFallback =
         (auth as McpAuthResolutionResult | undefined) ??
-          adapterConfig.fallbackAuth,
+        adapterConfig.fallbackAuth
+      const validatedAuth = _requireAuthResolution(
+        authOrFallback,
         `mcp-client authAdapter function "${authFunctionName}" returned no auth for domain "${domainName}"`
       )
       return {

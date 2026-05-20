@@ -35,7 +35,7 @@ export const createClient = async <T extends Record<string, any>>(
     config,
     {
       [CoreNamespace.root]: {
-        apps: config[McpClientNamespace.client].domains,
+        domains: config[McpClientNamespace.client].domains,
       },
     }
   ) as unknown as ClientConfig

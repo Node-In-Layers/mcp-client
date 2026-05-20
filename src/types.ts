@@ -1,4 +1,4 @@
-import { Config, App, LogLevelNames } from '@node-in-layers/core'
+import { Config, Domain, LogLevelNames } from '@node-in-layers/core'
 import type {
   OAuth2Config,
   DatastoreProviderConfig,
@@ -56,7 +56,7 @@ export type McpClientConfig = {
   /**
    * The domains to be loaded, in their order.
    */
-  domains: readonly App[]
+  domains: readonly Domain[]
   /**
    * Configurations for the MCP Server that is being connected to.
    */
