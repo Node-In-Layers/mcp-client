@@ -87,13 +87,38 @@ describe('/src/mcp/services.ts', () => {
       assert.equal(setup.getAuth.callCount, 1)
     })
 
-    it('should throw early when adapter auth is missing', async () => {
+    it('should connect without transport auth when adapter returns undefined', async () => {
       const setup = _createContext({
         authAdapter: {
           module: 'auth-domain',
           authFunctionName: 'getAuth',
         },
         authFunctionResult: undefined,
+      })
+      const transportStub = sinon.stub().resolves({} as Transport)
+      const services = createMcpServices(setup.context, {
+        createTransport: transportStub,
+        createClient: sinon.stub().returns({
+          connect: sinon.stub().resolves(undefined),
+          close: sinon.stub().resolves(undefined),
+          callTool: sinon.stub().resolves({ content: [{ text: '{}' }] }),
+        } as any),
+      })
+
+      await services.executeTool('myTool', { value: 'x' })
+
+      assert.equal(transportStub.callCount, 1)
+      assert.equal(transportStub.firstCall.args[1]?.key, undefined)
+      assert.equal(setup.getAuth.callCount, 1)
+    })
+
+    it('should throw when adapter returns invalid auth', async () => {
+      const setup = _createContext({
+        authAdapter: {
+          module: 'auth-domain',
+          authFunctionName: 'getAuth',
+        },
+        authFunctionResult: { key: '' },
       })
       const services = createMcpServices(setup.context, {
         createTransport: sinon.stub().resolves({} as Transport),
@@ -112,10 +137,7 @@ describe('/src/mcp/services.ts', () => {
       }
 
       assert.instanceOf(actualError, Error)
-      assert.match(
-        (actualError as Error).message,
-        /returned no auth for domain "auth-domain"/
-      )
+      assert.match((actualError as Error).message, /invalid auth/)
     })
 
     it('should fall back to system credentials when adapter is absent', async () => {

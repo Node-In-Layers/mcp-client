@@ -176,9 +176,17 @@ export const createMcpServices = (
       const authOrFallback =
         (auth as McpAuthResolutionResult | undefined) ??
         adapterConfig.fallbackAuth
+      if (authOrFallback === undefined) {
+        return {
+          key: context.config[McpClientNamespace.client].credentials?.key,
+          header: context.config[McpClientNamespace.client].credentials?.header,
+          formatter:
+            context.config[McpClientNamespace.client].credentials?.formatter,
+        }
+      }
       const validatedAuth = _requireAuthResolution(
         authOrFallback,
-        `mcp-client authAdapter function "${authFunctionName}" returned no auth for domain "${domainName}"`
+        `mcp-client authAdapter function "${authFunctionName}" returned invalid auth for domain "${domainName}"`
       )
       return {
         key: validatedAuth.key,
